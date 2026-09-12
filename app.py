@@ -12,7 +12,7 @@ from watcher import WorkspaceWatcher
 from models import LifeEventStatus, LifeEventCategory
 from tools.gmail_sync import (
     create_oauth_flow, save_credentials, get_connected_user,
-    get_user_profile, sync_gmail_inbox, disconnect_google
+    get_user_profile, sync_gmail_inbox, sync_calendar_events, disconnect_google
 )
 
 # Ensure environment variables are loaded
@@ -165,6 +165,7 @@ def oauth2callback():
         }
         # Perform initial sync
         sync_gmail_inbox(max_results=10)
+        sync_calendar_events(max_results=10)
         return redirect("/?google_connected=true")
     except Exception as e:
         print(f"[App] OAuth callback error: {e}")
@@ -214,11 +215,12 @@ def google_status():
 
 @app.route("/api/google/sync", methods=["POST"])
 def google_sync():
-    """Manually triggers Gmail inbox sync for life-admin documents."""
-    res = sync_gmail_inbox(max_results=15)
+    """Manually triggers Gmail and Google Calendar sync for life-admin documents."""
+    gmail_res = sync_gmail_inbox(max_results=15)
+    cal_res = sync_calendar_events(max_results=15)
     agent.run_discovery_cycle()
     summary = agent.get_dashboard_summary()
-    return jsonify({"result": res, "summary": summary})
+    return jsonify({"result": {"gmail": gmail_res, "calendar": cal_res}, "summary": summary})
 
 
 @app.route("/api/google/disconnect", methods=["POST"])

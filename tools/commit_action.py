@@ -44,6 +44,14 @@ def commit_action(event_id: str, decision: str = "approve", notes: Optional[str]
                 msg = f"Approved and sent RSVP response for: {event.title} (calendar hold confirmed)"
             else:
                 msg = f"Approved and confirmed appointment: {event.title} (reminder armed)"
+            try:
+                from .gmail_sync import create_calendar_hold, load_credentials
+                if load_credentials():
+                    start_date = event.due_or_event_date or event.trigger_date
+                    if start_date:
+                        create_calendar_hold(title=event.title, start_iso=start_date, end_iso=start_date, description=event.summary)
+            except Exception as e:
+                pass
         elif event.type.value == "warranty":
             msg = f"Approved and submitted: warranty claim for {event.title}. Reference #REC-2026-0392"
         elif event.type.value == "bill":

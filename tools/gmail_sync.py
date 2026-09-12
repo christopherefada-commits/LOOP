@@ -9,6 +9,7 @@ import os
 import re
 import json
 import base64
+import datetime
 from typing import Optional, Dict, Any, List
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import Flow
@@ -22,7 +23,9 @@ SCOPES = [
     "openid",
     "https://www.googleapis.com/auth/userinfo.email",
     "https://www.googleapis.com/auth/userinfo.profile",
-    "https://www.googleapis.com/auth/gmail.readonly"
+    "https://www.googleapis.com/auth/gmail.readonly",
+    "https://www.googleapis.com/auth/calendar.readonly",
+    "https://www.googleapis.com/auth/calendar.events"
 ]
 
 # Ensure insecure transport is allowed for localhost development
@@ -295,3 +298,108 @@ def _extract_body(payload: Dict[str, Any]) -> str:
                 pass
 
     return body_data
+
+
+def sync_calendar_events(max_results: int = 15, creds: Optional[Credentials] = None) -> Dict[str, Any]:
+    """
+    Queries the user's primary Google Calendar for upcoming events (next 30 days),
+    and saves them as markdown files in workspace/inbox/ for autonomous agent processing.
+    """
+    if not creds:
+        creds = load_credentials()
+    if not creds:
+        return {"success": False, "error": "Not connected to Google"}
+
+    try:
+        service = build("calendar", "v3", credentials=creds)
+        os.makedirs(INBOX_DIR, exist_ok=True)
+
+        now = datetime.datetime.now(datetime.timezone.utc).isoformat()
+        events_result = service.events().list(
+            calendarId="primary",
+            timeMin=now,
+            maxResults=max_results,
+            singleEvents=True,
+            orderBy="startTime"
+        ).execute()
+
+        items = events_result.get("items", [])
+        if not items:
+            return {"success": True, "synced_count": 0, "events": [], "note": "No upcoming calendar events found"}
+
+        synced = []
+        for event in items:
+            event_id = event.get("id", "")
+            dest_file = os.path.join(INBOX_DIR, f"calendar_{event_id}.md")
+            if os.path.exists(dest_file):
+                continue
+
+            summary = event.get("summary", "Untitled Calendar Event")
+            start = event.get("start", {}).get("dateTime") or event.get("start", {}).get("date", "")
+            end = event.get("end", {}).get("dateTime") or event.get("end", {}).get("date", "")
+            location = event.get("location", "Not specified")
+            description = event.get("description", "")
+            organizer = event.get("organizer", {}).get("displayName") or event.get("organizer", {}).get("email", "Organizer")
+            html_link = event.get("htmlLink", "")
+
+            content = (
+                f"# Meeting Invitation: {summary}\n\n"
+                f"**From:** {organizer}\n"
+                f"**Date:** {start}\n"
+                f"**End:** {end}\n"
+                f"**Location:** {location}\n"
+                f"**Source:** Google Calendar (ID: {event_id})\n"
+                f"**Link:** {html_link}\n\n"
+                f"## Event Details\n\n"
+                f"{description.strip() if description.strip() else 'Calendar scheduled appointment.'}\n"
+            )
+
+            with open(dest_file, "w", encoding="utf-8") as f:
+                f.write(content)
+
+            synced.append({
+                "id": event_id,
+                "summary": summary,
+                "start": start,
+                "filename": f"calendar_{event_id}.md"
+            })
+            print(f"[CalendarSync] Ingested calendar event into inbox: {summary} ({f'calendar_{event_id}.md'})")
+
+        return {
+            "success": True,
+            "synced_count": len(synced),
+            "synced_events": synced
+        }
+    except Exception as e:
+        print(f"[CalendarSync] Error during calendar sync: {e}")
+        return {"success": False, "error": str(e)}
+
+
+def create_calendar_hold(title: str, start_iso: str, end_iso: str, description: str = "", creds: Optional[Credentials] = None) -> Optional[str]:
+    """Inserts a confirmed event/hold into Google Calendar (e.g. upon user approval of an RSVP/appointment)."""
+    if not creds:
+        creds = load_credentials()
+    if not creds:
+        return None
+
+    try:
+        service = build("calendar", "v3", credentials=creds)
+        event_body = {
+            "summary": f"[LOOP Confirmed] {title}",
+            "description": description,
+            "start": {"dateTime": start_iso} if "T" in start_iso else {"date": start_iso},
+            "end": {"dateTime": end_iso} if "T" in end_iso else {"date": end_iso},
+            "reminders": {
+                "useDefault": False,
+                "overrides": [
+                    {"method": "popup", "minutes": 60},
+                    {"method": "email", "minutes": 1440}
+                ]
+            }
+        }
+        created = service.events().insert(calendarId="primary", body=event_body).execute()
+        print(f"[CalendarSync] Created calendar hold: {created.get('htmlLink')}")
+        return created.get("htmlLink")
+    except Exception as e:
+        print(f"[CalendarSync] Error creating calendar hold: {e}")
+        return None
