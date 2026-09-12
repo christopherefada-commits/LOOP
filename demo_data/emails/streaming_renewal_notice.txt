@@ -1,0 +1,13 @@
+From: billing@streamflow-plus.example.com
+To: alex.mercer.dev@gmail.com
+Date: April 14, 2026 at 9:00 AM
+Subject: StreamFlow+ Monthly Subscription Renewal Notice
+
+Hi Alex,
+
+This is a courtesy reminder that your StreamFlow+ Premium Subscription ($18.99/mo) will automatically renew on April 28, 2026. 
+
+Your payment method ending in 4108 will be charged. If you wish to make changes to your plan or cancel prior to the renewal date, please visit your account settings at least 24 hours before renewal.
+
+Thank you for streaming with us,
+The StreamFlow+ Team

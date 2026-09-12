@@ -1,0 +1,64 @@
+{
+  "provider": "Pacific Energy & Electric",
+  "account_number": "ACCT-8921-5502",
+  "customer_name": "Alex Mercer",
+  "service_address": "742 Evergreen Terrace, Apt 4B, San Francisco, CA",
+  "bills": [
+    {
+      "bill_id": "BILL-2025-11",
+      "billing_period": "Nov 01, 2025 - Nov 30, 2025",
+      "statement_date": "2025-12-03",
+      "amount": 145.20,
+      "kwh_used": 610,
+      "rate_per_kwh": 0.238,
+      "status": "paid"
+    },
+    {
+      "bill_id": "BILL-2025-12",
+      "billing_period": "Dec 01, 2025 - Dec 31, 2025",
+      "statement_date": "2026-01-04",
+      "amount": 148.50,
+      "kwh_used": 624,
+      "rate_per_kwh": 0.238,
+      "status": "paid"
+    },
+    {
+      "bill_id": "BILL-2026-01",
+      "billing_period": "Jan 01, 2026 - Jan 31, 2026",
+      "statement_date": "2026-02-03",
+      "amount": 142.80,
+      "kwh_used": 600,
+      "rate_per_kwh": 0.238,
+      "status": "paid"
+    },
+    {
+      "bill_id": "BILL-2026-02",
+      "billing_period": "Feb 01, 2026 - Feb 28, 2026",
+      "statement_date": "2026-03-03",
+      "amount": 151.30,
+      "kwh_used": 635,
+      "rate_per_kwh": 0.238,
+      "status": "paid"
+    },
+    {
+      "bill_id": "BILL-2026-03",
+      "billing_period": "Mar 01, 2026 - Mar 31, 2026",
+      "statement_date": "2026-04-03",
+      "amount": 147.20,
+      "kwh_used": 618,
+      "rate_per_kwh": 0.238,
+      "status": "paid"
+    },
+    {
+      "bill_id": "BILL-2026-04",
+      "billing_period": "Apr 01, 2026 - Apr 30, 2026",
+      "statement_date": "2026-05-02",
+      "amount": 187.00,
+      "kwh_used": 621,
+      "rate_per_kwh": 0.301,
+      "due_date": "2026-05-22",
+      "status": "unpaid",
+      "notes": "Includes seasonal peak transmission rate adjustment (+26.5% rate revision effective April 1)."
+    }
+  ]
+}
