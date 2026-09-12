@@ -1,0 +1,30 @@
+================================================================================
+                    SONY CONSUMER AUDIO LIMITED WARRANTY POLICY
+                          Effective Date: January 1, 2026
+================================================================================
+
+1. SCOPE OF COVERAGE
+Sony Electronics Inc. ("Sony") warrants this audio product (including WH-1000 series
+headphones) against defects in material or workmanship for a period of one (1) year 
+from the original date of purchase.
+
+2. ELIGIBLE DEFECTS
+• Spontaneous shutdown, power failure, or battery charging irregularities not caused by user damage.
+• Acoustic distortion, driver failure, or Active Noise Cancellation (ANC) sensor malfunctions.
+• Firmware communication errors unresponsive to factory reset procedures.
+
+3. CLAIM REQUIREMENTS
+To initiate a valid warranty replacement or repair claim, the claimant must provide:
+(a) Proof of original purchase (receipt or invoice showing merchant name, date, and purchase price).
+(b) Product model and valid serial number.
+(c) Detailed description of the symptoms and troubleshooting steps attempted.
+
+4. REMEDY & TURNAROUND
+Upon receipt of claim documentation, Sony will issue a prepaid shipping label. Sony will,
+at its option, replace the defective unit with a certified new or refurbished unit of
+equal value ($179.00 MSRP), or issue a full refund within 5–7 business days.
+
+5. CONTACT FOR CLAIMS
+Direct submissions: warranty-claims@sony-electronics-support.example.com
+Reference Claim Portal: https://claims.sony-audio.example.com/portal
+================================================================================
