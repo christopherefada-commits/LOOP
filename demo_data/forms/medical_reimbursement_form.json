@@ -1,0 +1,25 @@
+{
+  "form_id": "FORM-REIMB-2026",
+  "title": "Employee Health & Wellness Expense Claim",
+  "issuer": "Global Health Benefits Trust",
+  "deadline": "2026-11-01",
+  "fields_required": [
+    "patient_name",
+    "member_id",
+    "provider_name",
+    "service_description",
+    "date_of_service",
+    "amount_claimed",
+    "receipt_attached"
+  ],
+  "prefilled_data": {
+    "patient_name": "Alex Mercer",
+    "member_id": "MEM-8829104",
+    "provider_name": "Pacific Dental Group",
+    "service_description": "Annual dental examination & preventative cleaning",
+    "date_of_service": "2026-10-15",
+    "amount_claimed": 120.00,
+    "receipt_attached": true
+  },
+  "status": "ready_for_signature"
+}

@@ -1,0 +1,15 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Pacific Dental Care//Appointment Scheduler//EN
+BEGIN:VEVENT
+UID:APPT-2026-1014-9923
+SUMMARY:Dental Cleaning & Annual Examination
+DESCRIPTION:Annual routine cleaning, bite-wing x-rays, and comprehensive oral exam with Dr. Emily Watson. Please arrive 10 minutes early with insurance card.
+LOCATION:Pacific Dental Group, Suite 300, 500 Howard Street, San Francisco, CA
+DTSTART:2026-10-15T15:00:00
+DTEND:2026-10-15T16:00:00
+ORGANIZER;CN=Pacific Dental Care:mailto:appointments@pacificdental.example.com
+ATTENDEE;CN=Alex Mercer:mailto:alex.mercer.dev@gmail.com
+STATUS:CONFIRMED
+END:VEVENT
+END:VCALENDAR

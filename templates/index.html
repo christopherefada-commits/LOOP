@@ -1,0 +1,1258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LOOP — Life Admin Agent</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Georgia:wght@400;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    /* ==========================================================================
+       LOOP DESIGN SYSTEM (LOOP-UI-Design-Rules.pdf)
+       ========================================================================== */
+    :root {
+      --bg: #F3F5F1;
+      --surface: #FFFFFF;
+      --ink: #1B2420;
+      --muted: #5B6B62;
+      --border: #E1E4DC;
+      --loop-green: #1F5C45;
+      --green-hover: #153F30;
+      --green-tint: #E3EEE7;
+      --amber-money: #B8863B;
+      --rust: #B54A2A;
+      --font-serif: 'Georgia', 'Source Serif 4', serif;
+      --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+      --font-mono: 'JetBrains Mono', 'Consolas', 'SF Mono', monospace;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background-color: var(--bg);
+      color: var(--ink);
+      font-family: var(--font-sans);
+      font-size: 13px;
+      line-height: 1.5;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Top Simulation / Demo Bar */
+    .demo-bar {
+      background: #FFFFFF;
+      border-bottom: 1px solid var(--border);
+      padding: 6px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 11px;
+      color: var(--muted);
+      z-index: 50;
+    }
+    .demo-bar .demo-title {
+      font-weight: 600;
+      color: var(--loop-green);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .demo-actions {
+      display: flex;
+      gap: 8px;
+    }
+    .demo-btn {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--ink);
+      padding: 4px 10px;
+      border-radius: 4px;
+      font-size: 11px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.15s ease;
+    }
+    .demo-btn:hover {
+      background: var(--green-tint);
+      border-color: var(--loop-green);
+      color: var(--loop-green);
+    }
+    .demo-btn.primary {
+      background: var(--loop-green);
+      color: #FFFFFF;
+      border-color: var(--loop-green);
+    }
+    .demo-btn.primary:hover {
+      background: var(--green-hover);
+    }
+
+    /* Layout Shell */
+    .app-shell {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    /* Left Persistent Navigation */
+    .left-nav {
+      width: 230px;
+      background: var(--bg);
+      border-right: 1px solid var(--border);
+      padding: 24px 18px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 28px;
+      cursor: pointer;
+    }
+    .brand-arc {
+      width: 22px;
+      height: 22px;
+      transition: transform 0.4s ease;
+    }
+    .brand-wordmark {
+      font-family: var(--font-serif);
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--ink);
+      letter-spacing: -0.5px;
+    }
+    .nav-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+    .nav-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 12px;
+      border-radius: 6px;
+      color: var(--muted);
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .nav-item:hover {
+      background: rgba(31, 92, 69, 0.06);
+      color: var(--ink);
+    }
+    .nav-item.active {
+      background: var(--surface);
+      color: var(--loop-green);
+      font-weight: 600;
+      border: 1px solid var(--border);
+    }
+    .nav-badge {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      padding: 1px 6px;
+      border-radius: 10px;
+      background: var(--green-tint);
+      color: var(--loop-green);
+    }
+    .nav-bottom {
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .signout-link {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 11px;
+      font-weight: 500;
+      padding: 2px 6px;
+      border-radius: 4px;
+      transition: all 0.15s ease;
+    }
+    .signout-link:hover {
+      color: var(--rust);
+      background: #FDF2E9;
+    }
+
+    /* Google Connect Navigation Widget */
+    .google-nav-card {
+      margin-top: auto;
+      margin-bottom: 16px;
+      padding-top: 14px;
+      border-top: 1px solid var(--border);
+    }
+    .google-connect-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: #FFFFFF;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 7px 12px;
+      color: var(--ink);
+      text-decoration: none;
+      font-size: 11.5px;
+      font-weight: 500;
+      transition: all 0.15s ease;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+    }
+    .google-connect-btn:hover {
+      background: var(--green-tint);
+      border-color: var(--loop-green);
+      color: var(--loop-green);
+    }
+    .google-status-pill {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: #FFFFFF;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 6px 10px;
+      font-size: 11px;
+    }
+    .pulse-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--loop-green);
+      display: inline-block;
+    }
+    .google-email-text {
+      font-family: var(--font-mono);
+      font-size: 10.5px;
+      color: var(--ink);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      max-width: 155px;
+    }
+    .google-actions-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 6px;
+      padding: 0 2px;
+    }
+    .google-sync-btn {
+      background: transparent;
+      border: none;
+      color: var(--loop-green);
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      padding: 0;
+    }
+    .google-sync-btn:hover {
+      text-decoration: underline;
+    }
+    .google-disconnect-link {
+      background: transparent;
+      border: none;
+      color: var(--muted);
+      font-size: 10.5px;
+      cursor: pointer;
+      padding: 0;
+    }
+    .google-disconnect-link:hover {
+      color: var(--rust);
+    }
+
+    /* Main Content Pane */
+    .main-pane {
+      flex: 1;
+      padding: 36px 48px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+    }
+
+    /* AWS Bedrock Live Status Banner */
+    .model-status-banner {
+      max-width: 820px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 16px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .model-status-banner.status-quota {
+      border-left: 4px solid var(--amber-money);
+      background: #FCFAF6;
+    }
+    .model-status-banner.status-active {
+      border-left: 4px solid var(--loop-green);
+      background: #F8FBF9;
+    }
+    .model-status-banner.status-error {
+      border-left: 4px solid var(--rust);
+      background: #FDF9F8;
+    }
+    .status-banner-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .status-banner-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--ink);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .status-badge {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-weight: 500;
+      letter-spacing: 0.2px;
+    }
+    .status-badge.badge-quota {
+      background: #F9EED9;
+      color: var(--amber-money);
+      border: 1px solid #E6D2B1;
+    }
+    .status-badge.badge-active {
+      background: var(--green-tint);
+      color: var(--loop-green);
+      border: 1px solid #C4DCCE;
+    }
+    .status-badge.badge-error {
+      background: #F9E2DB;
+      color: var(--rust);
+      border: 1px solid #E6B8AC;
+    }
+    .status-banner-body {
+      font-size: 12.5px;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+    .status-banner-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 18px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--muted);
+      border-top: 1px dashed var(--border);
+      padding-top: 8px;
+      margin-top: 4px;
+    }
+    .status-banner-meta span {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    /* Dashboard Hero */
+    .hero-header {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .greeting {
+      font-size: 14px;
+      color: var(--muted);
+      font-weight: 500;
+    }
+    .hero-statement {
+      font-family: var(--font-serif);
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--ink);
+      letter-spacing: -0.5px;
+    }
+    .hero-sub {
+      font-size: 13px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    /* Cards Grid */
+    .cards-container {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      max-width: 820px;
+    }
+
+    /* Life Event Card */
+    .life-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--border);
+      border-radius: 6px;
+      padding: 18px 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      transition: border-color 0.15s ease;
+    }
+    .life-card.category-money-recover { border-left-color: var(--amber-money); }
+    .life-card.category-money-lose { border-left-color: var(--rust); }
+    .life-card.category-deadline { border-left-color: var(--loop-green); }
+    .life-card.category-resolved { border-left-color: var(--loop-green); opacity: 0.85; }
+
+    .card-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .card-tags {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .type-pill {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 2px 8px;
+      border-radius: 4px;
+      background: var(--bg);
+      color: var(--muted);
+    }
+    .status-pill {
+      font-size: 11px;
+      font-weight: 500;
+      padding: 2px 8px;
+      border-radius: 12px;
+      border: 1px solid var(--loop-green);
+      color: var(--loop-green);
+      background: transparent;
+    }
+    .status-pill.needs-you {
+      border-color: var(--rust);
+      color: var(--rust);
+      font-weight: 600;
+    }
+
+    .card-title {
+      font-family: var(--font-serif);
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--ink);
+    }
+    .card-summary {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+
+    .card-evidence {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--muted);
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      padding-top: 4px;
+    }
+    .evidence-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .evidence-bullet {
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: var(--muted);
+    }
+
+    .card-money {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--amber-money);
+    }
+
+    .card-bottom {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 6px;
+      border-top: 1px solid rgba(225, 228, 220, 0.6);
+    }
+    .card-actions {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    /* Buttons per spec */
+    .btn-primary {
+      background: var(--loop-green);
+      color: #FFFFFF;
+      font-weight: 600;
+      font-size: 12.5px;
+      padding: 7px 16px;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+      transition: background 0.15s ease;
+    }
+    .btn-primary:hover {
+      background: var(--green-hover);
+    }
+    .btn-secondary {
+      background: transparent;
+      border: none;
+      color: var(--muted);
+      font-size: 12.5px;
+      cursor: pointer;
+      padding: 6px 4px;
+      transition: color 0.15s ease;
+    }
+    .btn-secondary:hover {
+      color: var(--ink);
+    }
+    .btn-destructive {
+      background: transparent;
+      border: none;
+      color: var(--rust);
+      font-size: 12.5px;
+      font-weight: 500;
+      cursor: pointer;
+      padding: 6px 4px;
+      transition: opacity 0.15s ease;
+    }
+    .btn-destructive:hover {
+      opacity: 0.8;
+    }
+
+    /* Modal / Approval View */
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(27, 36, 32, 0.45);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+    }
+    .modal-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .approval-modal {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      width: 680px;
+      max-height: 85vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .modal-header {
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .modal-title {
+      font-family: var(--font-serif);
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--ink);
+    }
+    .modal-body {
+      padding: 24px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+    .section-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+    .evidence-box {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 12px 16px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--ink);
+      line-height: 1.6;
+    }
+    .draft-box {
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 14px 16px;
+      font-family: var(--font-sans);
+      font-size: 13px;
+      line-height: 1.5;
+      background: #FFFFFF;
+      white-space: pre-wrap;
+      max-height: 240px;
+      overflow-y: auto;
+    }
+    .modal-footer {
+      padding: 16px 24px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #FAFBF9;
+    }
+    .modal-actions-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    /* Activity Timeline Panel */
+    .timeline-container {
+      margin-top: 16px;
+      max-width: 820px;
+    }
+    .timeline-title {
+      font-family: var(--font-serif);
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--ink);
+      margin-bottom: 12px;
+    }
+    .timeline-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      border-left: 1.5px solid var(--border);
+      padding-left: 16px;
+      margin-left: 6px;
+    }
+    .timeline-item {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+      font-size: 13px;
+      position: relative;
+    }
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      left: -20px;
+      top: 6px;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--loop-green);
+    }
+    .timeline-time {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--muted);
+      min-width: 65px;
+    }
+    .timeline-msg {
+      color: var(--ink);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Demo & Simulation Top Bar -->
+  <div class="demo-bar">
+    <div class="demo-title">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <circle cx="12" cy="12" r="10" stroke-dasharray="50 15" />
+      </svg>
+      <span>LOOP CONSOLE</span>
+      {% if user and user.is_demo %}
+      <span style="font-size: 10px; background: #FFF4E5; color: var(--amber-money); padding: 2px 6px; border-radius: 4px; font-family: var(--font-mono); margin-left: 6px; font-weight: 500;">SANDBOX EVALUATOR MODE</span>
+      {% elif user %}
+      <span style="font-size: 10px; background: var(--green-tint); color: var(--loop-green); padding: 2px 6px; border-radius: 4px; font-family: var(--font-mono); margin-left: 6px; font-weight: 500;">AUTHENTICATED SESSION</span>
+      {% endif %}
+    </div>
+    <div class="demo-actions">
+      <button class="demo-btn" onclick="simulatePreset('receipt')">Simulate: Receipt Arrives</button>
+      <button class="demo-btn" onclick="simulatePreset('complaint')">Simulate: Complaint Email</button>
+      <button class="demo-btn" onclick="simulatePreset('bills')">Simulate: High Bill</button>
+      <button class="demo-btn" onclick="simulatePreset('appointment')">Simulate: Meeting Invite</button>
+      <button class="demo-btn primary" onclick="runDiscovery()">Run LOOP Discovery</button>
+      <button class="demo-btn" onclick="resetDemo()">Reset State</button>
+    </div>
+  </div>
+
+  <div class="app-shell">
+    <!-- Left Navigation -->
+    <nav class="left-nav">
+      <div>
+        <div class="brand" onclick="loadDashboard()">
+          <!-- Brand Motif: Open arc in Loop Green -->
+          <svg class="brand-arc" id="brandArc" viewBox="0 0 24 24">
+            <circle id="arcCircle" cx="12" cy="12" r="9" fill="none" stroke="#1F5C45" stroke-width="2.5" 
+                    stroke-dasharray="48 10" stroke-linecap="round" />
+          </svg>
+          <span class="brand-wordmark">LOOP</span>
+        </div>
+
+        <ul class="nav-list">
+          <li class="nav-item active" onclick="filterCategory('all', this)">
+            <span>All</span>
+            <span class="nav-badge" id="badgeAll">0</span>
+          </li>
+          <li class="nav-item" onclick="filterCategory('money', this)">
+            <span>Money</span>
+            <span class="nav-badge" id="badgeMoney">0</span>
+          </li>
+          <li class="nav-item" onclick="filterCategory('deadlines', this)">
+            <span>Deadlines</span>
+            <span class="nav-badge" id="badgeDeadlines">0</span>
+          </li>
+          <li class="nav-item" onclick="filterCategory('documents', this)">
+            <span>Documents</span>
+            <span class="nav-badge">6</span>
+          </li>
+          <li class="nav-item" onclick="filterCategory('approvals', this)">
+            <span>Approvals</span>
+            <span class="nav-badge" id="badgeApprovals">0</span>
+          </li>
+          <li class="nav-item" onclick="scrollToTimeline(this)">
+            <span>Activity</span>
+          </li>
+        </ul>
+      <!-- Google Gmail Integration Widget -->
+      <div class="google-nav-card" id="googleNavCard">
+        <div id="googleDisconnectedState">
+          <a href="/auth/google" class="google-connect-btn">
+            <svg width="13" height="13" viewBox="0 0 24 24">
+              <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+              <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+              <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+              <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+            </svg>
+            <span>Connect Gmail</span>
+          </a>
+        </div>
+        <div id="googleConnectedState" style="display: none;">
+          <div class="google-status-pill">
+            <span class="pulse-dot"></span>
+            <span class="google-email-text" id="googleEmailLabel">Connecting...</span>
+          </div>
+          <div class="google-actions-row">
+            <button onclick="syncGoogleMail()" class="google-sync-btn" id="googleSyncBtn">Sync Mail</button>
+            <button onclick="disconnectGoogle()" class="google-disconnect-link">Disconnect</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="nav-bottom">
+        <div style="display: flex; align-items: center; justify-content: space-between;">
+          <div style="font-weight: 600; color: var(--ink); font-size: 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 140px;" id="navUserName">{{ user.name if user else 'Alex Mercer' }}</div>
+          <a href="/auth/logout" class="signout-link" title="Sign out">Sign out</a>
+        </div>
+        <div style="font-size: 10.5px; color: var(--muted); margin-top: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 190px;" id="navUserSub">
+          {{ user.email if user else 'Autonomous Life Agent' }}
+        </div>
+      </div>
+    </nav>
+
+    <!-- Main Content Pane -->
+    <main class="main-pane">
+      <!-- AWS Bedrock Live Status Banner -->
+      <div id="modelStatusBanner" class="model-status-banner status-quota" style="display: none;">
+        <div class="status-banner-header">
+          <div class="status-banner-title">
+            <svg id="bannerIcon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--amber-money);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+            <span id="bannerTitle">AWS Bedrock Status</span>
+          </div>
+          <span class="status-badge badge-quota" id="bannerBadge">Evaluating</span>
+        </div>
+        <div class="status-banner-body" id="bannerMessage">
+          Evaluating AWS Bedrock connectivity...
+        </div>
+        <div class="status-banner-meta" id="bannerMeta">
+          <span>Region: <strong id="bannerRegion" style="font-weight: 500; color: var(--ink);">eu-north-1</strong></span>
+          <span>Model: <strong id="bannerModel" style="font-weight: 500; color: var(--ink);">eu.anthropic.claude-sonnet-4-6</strong></span>
+          <span>Local Fallback: <strong id="bannerLocalStatus" style="font-weight: 500; color: var(--rust);">Disabled (No Mocking)</strong></span>
+        </div>
+      </div>
+
+      <div class="hero-header">
+        <div class="greeting" id="greetingUser">Good evening{{ (', ' + user.given_name) if user and user.given_name else '.' }}</div>
+        <div class="hero-statement" id="heroStatement">LOOP found 0 open loops.</div>
+        <div class="hero-sub" id="heroSub">Scanning background files and bills quietly.</div>
+      </div>
+
+      <!-- Life Event Cards Container -->
+      <section class="cards-container" id="cardsContainer">
+        <!-- Cards rendered dynamically via JavaScript -->
+      </section>
+
+      <!-- Activity Timeline Section -->
+      <section class="timeline-container" id="timelineSection">
+        <div class="timeline-title">Activity timeline</div>
+        <ul class="timeline-list" id="timelineList">
+          <!-- Timeline entries rendered dynamically -->
+        </ul>
+      </section>
+    </main>
+  </div>
+
+  <!-- Approval View Modal (Section 6.3 & Section 10) -->
+  <div class="modal-overlay" id="approvalModal">
+    <div class="approval-modal">
+      <div class="modal-header">
+        <div class="modal-title" id="modalTitle">Review Prepared Action</div>
+        <button class="btn-secondary" onclick="closeModal()" style="font-size: 16px; cursor: pointer;">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <div>
+          <div class="section-label">Verified Evidence</div>
+          <div class="evidence-box" id="modalEvidence">
+            <!-- Monospace facts listed line by line -->
+          </div>
+        </div>
+
+        <div>
+          <div class="section-label">Prepared Action Draft</div>
+          <div class="draft-box" id="modalDraft" contenteditable="true">
+            <!-- Full actual claim text -->
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <div>
+          <button class="btn-destructive" id="btnReject" onclick="rejectAction()">Reject</button>
+        </div>
+        <div class="modal-actions-right">
+          <button class="btn-secondary" id="btnEdit" onclick="saveEdit()">Save edits</button>
+          <button class="btn-primary" id="btnApprove" onclick="approveAction()">Approve claim</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- JavaScript Application Logic -->
+  <script>
+    let currentEventId = null;
+    let currentCategoryFilter = 'all';
+    let appData = { open_loops: [], completed_loops: [], timeline: [] };
+
+    // Initial load & background refresh
+    document.addEventListener("DOMContentLoaded", () => {
+      loadDashboard();
+      loadGoogleStatus();
+      const params = new URLSearchParams(window.location.search);
+      const modalId = params.get('openModal');
+      if (modalId) {
+        setTimeout(() => openApprovalModal(modalId), 600);
+      }
+      if (params.get('google_connected')) {
+        setTimeout(() => {
+          alert("Google Account successfully connected! Life-admin emails have been queued for ingestion.");
+          window.history.replaceState({}, document.title, window.location.pathname);
+        }, 500);
+      }
+      setInterval(() => {
+        if (!currentEventId) {
+          loadDashboard();
+        }
+      }, 4000);
+    });
+
+    async function loadDashboard() {
+      try {
+        const res = await fetch("/api/summary");
+        appData = await res.json();
+        renderDashboard();
+      } catch (err) {
+        console.error("Failed to load dashboard data:", err);
+      }
+    }
+
+    function renderDashboard() {
+      const heroEl = document.getElementById("heroStatement");
+      const heroSub = document.getElementById("heroSub");
+      const count = appData.hero_number || 0;
+      const bStatus = appData.bedrock_status;
+
+      // Update AWS Bedrock Status Banner
+      const statusBanner = document.getElementById("modelStatusBanner");
+      if (statusBanner && bStatus) {
+        statusBanner.style.display = "flex";
+        const bannerTitle = document.getElementById("bannerTitle");
+        const bannerBadge = document.getElementById("bannerBadge");
+        const bannerMessage = document.getElementById("bannerMessage");
+        const bannerIcon = document.getElementById("bannerIcon");
+        const bannerRegion = document.getElementById("bannerRegion");
+        const bannerModel = document.getElementById("bannerModel");
+        const bannerLocalStatus = document.getElementById("bannerLocalStatus");
+
+        bannerRegion.textContent = bStatus.region || "eu-north-1";
+        bannerModel.textContent = bStatus.model_id || "eu.anthropic.claude-sonnet-4-6";
+        bannerLocalStatus.textContent = "Disabled (No Mocking)";
+
+        if (bStatus.ready) {
+          statusBanner.className = "model-status-banner status-active";
+          bannerTitle.textContent = bStatus.title || "AWS Bedrock Active · Real AI Reasoning Enabled";
+          bannerBadge.className = "status-badge badge-active";
+          bannerBadge.textContent = "Active · Live Inference";
+          bannerIcon.style.color = "var(--loop-green)";
+          bannerIcon.innerHTML = `<circle cx="12" cy="12" r="10"></circle><polyline points="16 9 10 15 8 13"></polyline>`;
+          bannerMessage.textContent = bStatus.message || `Connected to ${bStatus.model_id} in ${bStatus.region}. Model reasoning active.`;
+        } else {
+          statusBanner.className = "model-status-banner status-quota";
+          bannerTitle.textContent = bStatus.title || "AWS Bedrock Model Notice: Quota Provisioning Pending";
+          bannerBadge.className = "status-badge badge-quota";
+          bannerBadge.textContent = "0.0 req/min · Paused";
+          bannerIcon.style.color = "var(--amber-money)";
+          bannerIcon.innerHTML = `<circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line>`;
+          bannerMessage.textContent = bStatus.message || "AWS Bedrock model access is authenticated, but live model reasoning is paused because AWS has provisioned 0.0 tokens/day for this new account. Local fallback processing is strictly disabled. Real AI document review will commence automatically as soon as AWS approves your quota increase.";
+        }
+      }
+      
+      heroEl.textContent = `LOOP found ${count} open loop${count === 1 ? '' : 's'}.`;
+      if (bStatus && !bStatus.ready && count === 0) {
+        heroSub.textContent = "Awaiting AWS Bedrock model quota. Local fallback processing is disabled.";
+      } else if (appData.potential_recovery_total > 0) {
+        heroSub.textContent = `$${appData.potential_recovery_total.toFixed(2)} in potential recovery discovered.`;
+      } else {
+        heroSub.textContent = "All open items resolved.";
+      }
+
+      // Update Nav Badges
+      document.getElementById("badgeAll").textContent = count;
+      document.getElementById("badgeMoney").textContent = appData.open_loops.filter(e => e.category.includes("money")).length;
+      document.getElementById("badgeDeadlines").textContent = appData.open_loops.filter(e => e.category === "deadline").length;
+      document.getElementById("badgeApprovals").textContent = appData.awaiting_approval_count || 0;
+
+      // Filter cards
+      let filtered = appData.open_loops;
+      if (currentCategoryFilter === 'money') {
+        filtered = filtered.filter(e => e.category.includes("money"));
+      } else if (currentCategoryFilter === 'deadlines') {
+        filtered = filtered.filter(e => e.category === "deadline");
+      } else if (currentCategoryFilter === 'approvals') {
+        filtered = filtered.filter(e => e.status === "awaiting_approval");
+      }
+
+      // Render Cards
+      const container = document.getElementById("cardsContainer");
+      container.innerHTML = "";
+
+      if (filtered.length === 0) {
+        if (bStatus && !bStatus.ready) {
+          container.innerHTML = `
+            <div style="background: #FFFFFF; border: 1px solid var(--border); border-radius: 6px; padding: 24px; color: var(--muted); text-align: left;">
+              <strong style="color: var(--ink); font-weight: 600; display: block; margin-bottom: 6px; font-size: 13.5px;">Live Model Ingestion Paused</strong>
+              Document ingestion is waiting on AWS Bedrock quota provisioning. No synthetic or local mock cards are displayed per system configuration. Real AI document comprehension will run as soon as AWS provisions quota for <code>${bStatus.model_id || 'Claude Sonnet 4.6'}</code>.
+            </div>`;
+        } else {
+          container.innerHTML = `
+            <div style="background: #FFFFFF; border: 1px solid var(--border); border-radius: 6px; padding: 24px; color: var(--muted); text-align: left;">
+              No open loops in this view. LOOP has quietly handled your digital administration.
+            </div>`;
+        }
+      } else {
+        filtered.forEach(evt => {
+          const card = createCardElement(evt);
+          container.appendChild(card);
+        });
+      }
+
+      // Render Timeline
+      const timelineEl = document.getElementById("timelineList");
+      timelineEl.innerHTML = "";
+      (appData.timeline || []).forEach(item => {
+        const li = document.createElement("li");
+        li.className = "timeline-item";
+        li.innerHTML = `
+          <span class="timeline-time">${item.timestamp}</span>
+          <span class="timeline-msg">${item.message}</span>
+        `;
+        timelineEl.appendChild(li);
+      });
+    }
+
+    function createCardElement(evt) {
+      const card = document.createElement("div");
+      let categoryClass = "category-money-recover";
+      if (evt.category === "money_lose") categoryClass = "category-money-lose";
+      if (evt.category === "deadline") categoryClass = "category-deadline";
+      if (evt.status === "completed") categoryClass = "category-resolved";
+
+      card.className = `life-card ${categoryClass}`;
+
+      // Status pill label per copy rules
+      let statusLabel = "New";
+      let isNeedsYou = false;
+      if (evt.status === "awaiting_approval") {
+        statusLabel = "Awaiting review";
+        isNeedsYou = true;
+      } else if (evt.status === "prepared") {
+        statusLabel = "Prepared";
+      } else if (evt.status === "completed") {
+        statusLabel = "Done";
+      }
+
+      // Evidence lines
+      const evidenceHtml = (evt.evidence || []).map(line => `
+        <div class="evidence-item">
+          <div class="evidence-bullet"></div>
+          <span>${line}</span>
+        </div>
+      `).join("");
+
+      // Dollar amount
+      let moneyHtml = "";
+      if (evt.dollar_amount) {
+        if (evt.category === "money_recover") {
+          moneyHtml = `<div class="card-money">$${evt.dollar_amount.toFixed(2)} potential recovery</div>`;
+        } else if (evt.category === "money_lose") {
+          moneyHtml = `<div class="card-money" style="color: var(--rust);">$${evt.dollar_amount.toFixed(2)} detected charge</div>`;
+        }
+      }
+
+      // Primary button label per rules
+      let primaryBtnText = "Review";
+      if (evt.type === "warranty") primaryBtnText = "Review claim";
+      if (evt.type === "appointment") primaryBtnText = (evt.title || "").toLowerCase().includes("meeting") ? "Review RSVP" : "Review reminder";
+      if (evt.type === "bill") primaryBtnText = "Investigate";
+
+      card.innerHTML = `
+        <div class="card-top">
+          <div class="card-tags">
+            <span class="type-pill">${evt.type}</span>
+            <span class="status-pill ${isNeedsYou ? 'needs-you' : ''}">${statusLabel}</span>
+          </div>
+        </div>
+
+        <div class="card-title">${evt.title}</div>
+        <div class="card-summary">${evt.summary}</div>
+
+        ${evidenceHtml ? `<div class="card-evidence">${evidenceHtml}</div>` : ''}
+        ${moneyHtml}
+
+        <div class="card-bottom">
+          <div class="card-actions">
+            <button class="btn-primary" onclick="openApprovalModal('${evt.id}')">${primaryBtnText}</button>
+            <button class="btn-secondary" onclick="dismissLoop('${evt.id}')">Dismiss</button>
+          </div>
+        </div>
+      `;
+
+      return card;
+    }
+
+    async function openApprovalModal(eventId) {
+      currentEventId = eventId;
+      try {
+        const res = await fetch(`/api/event/${eventId}`);
+        const evt = await res.json();
+
+        document.getElementById("modalTitle").textContent = `Review: ${evt.title}`;
+        
+        // Render evidence line by line in monospace facts
+        const evidenceEl = document.getElementById("modalEvidence");
+        evidenceEl.innerHTML = (evt.evidence || []).map(line => `<div>• ${line}</div>`).join("");
+
+        // Render prepared draft in full
+        const draftEl = document.getElementById("modalDraft");
+        draftEl.textContent = evt.prepared_action || evt.summary;
+
+        // Configure button label
+        const approveBtn = document.getElementById("btnApprove");
+        if (evt.type === "warranty") approveBtn.textContent = "Approve claim";
+        else if (evt.type === "appointment") approveBtn.textContent = (evt.title || "").toLowerCase().includes("meeting") ? "Confirm & Send RSVP" : "Confirm reminder";
+        else approveBtn.textContent = "Approve action";
+
+        document.getElementById("approvalModal").classList.add("active");
+      } catch (err) {
+        console.error("Failed to load event details:", err);
+      }
+    }
+
+    function closeModal() {
+      document.getElementById("approvalModal").classList.remove("active");
+      currentEventId = null;
+    }
+
+    // Motion Moment: Closes the open-arc mark when an action is approved
+    function triggerLoopCloseAnimation() {
+      const circle = document.getElementById("arcCircle");
+      if (circle) {
+        circle.setAttribute("stroke-dasharray", "60 0"); // full solid closed circle
+        setTimeout(() => {
+          circle.setAttribute("stroke-dasharray", "48 10"); // return to open arc
+        }, 1800);
+      }
+    }
+
+    async function approveAction() {
+      if (!currentEventId) return;
+      try {
+        triggerLoopCloseAnimation();
+        const res = await fetch(`/api/approve/${currentEventId}`, { method: "POST" });
+        const data = await res.json();
+        appData = data.summary;
+        closeModal();
+        renderDashboard();
+      } catch (err) {
+        console.error("Approval error:", err);
+      }
+    }
+
+    async function rejectAction() {
+      if (!currentEventId) return;
+      try {
+        const res = await fetch(`/api/reject/${currentEventId}`, { method: "POST" });
+        const data = await res.json();
+        appData = data.summary;
+        closeModal();
+        renderDashboard();
+      } catch (err) {
+        console.error("Rejection error:", err);
+      }
+    }
+
+    async function saveEdit() {
+      if (!currentEventId) return;
+      const text = document.getElementById("modalDraft").innerText;
+      try {
+        const res = await fetch(`/api/edit/${currentEventId}`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ text })
+        });
+        const data = await res.json();
+        appData = data.summary;
+        alert("Draft edits saved.");
+      } catch (err) {
+        console.error("Save edit error:", err);
+      }
+    }
+
+    async function dismissLoop(eventId) {
+      currentEventId = eventId;
+      await rejectAction();
+    }
+
+    async function runDiscovery() {
+      try {
+        const res = await fetch("/api/run-discovery", { method: "POST" });
+        const data = await res.json();
+        appData = data.summary;
+        renderDashboard();
+      } catch (err) {
+        console.error("Discovery error:", err);
+      }
+    }
+
+    async function simulatePreset(preset) {
+      try {
+        const res = await fetch(`/api/simulate/${preset}`, { method: "POST" });
+        const data = await res.json();
+        appData = data.summary;
+        renderDashboard();
+      } catch (err) {
+        console.error("Simulation error:", err);
+      }
+    }
+
+    async function resetDemo() {
+      try {
+        const res = await fetch("/api/reset", { method: "POST" });
+        const data = await res.json();
+        appData = data.summary;
+        renderDashboard();
+      } catch (err) {
+        console.error("Reset error:", err);
+      }
+    }
+
+    function filterCategory(cat, el) {
+      currentCategoryFilter = cat;
+      document.querySelectorAll(".nav-item").forEach(item => item.classList.remove("active"));
+      if (el) el.classList.add("active");
+      renderDashboard();
+    }
+
+    function scrollToTimeline(el) {
+      document.querySelectorAll(".nav-item").forEach(item => item.classList.remove("active"));
+      if (el) el.classList.add("active");
+      document.getElementById("timelineSection").scrollIntoView({ behavior: 'smooth' });
+    }
+
+    async function loadGoogleStatus() {
+      try {
+        const res = await fetch("/api/google/status");
+        const data = await res.json();
+        const disc = document.getElementById("googleDisconnectedState");
+        const conn = document.getElementById("googleConnectedState");
+        const emailLabel = document.getElementById("googleEmailLabel");
+
+        if (data.connected && data.user) {
+          disc.style.display = "none";
+          conn.style.display = "block";
+          emailLabel.textContent = data.user.email || "Connected";
+        } else {
+          disc.style.display = "block";
+          conn.style.display = "none";
+        }
+      } catch (err) {
+        console.error("Google status error:", err);
+      }
+    }
+
+    async function syncGoogleMail() {
+      const syncBtn = document.getElementById("googleSyncBtn");
+      const originalText = syncBtn.textContent;
+      syncBtn.textContent = "Syncing...";
+      syncBtn.disabled = true;
+      try {
+        const res = await fetch("/api/google/sync", { method: "POST" });
+        const data = await res.json();
+        appData = data.summary;
+        renderDashboard();
+        const count = data.result && data.result.synced_count !== undefined ? data.result.synced_count : 0;
+        alert(`Gmail sync complete! Ingested ${count} new life-admin document(s) into workspace.`);
+      } catch (err) {
+        console.error("Gmail sync error:", err);
+        alert("Failed to sync Gmail. Please verify connection.");
+      } finally {
+        syncBtn.textContent = originalText;
+        syncBtn.disabled = false;
+      }
+    }
+
+    async function disconnectGoogle() {
+      if (!confirm("Are you sure you want to disconnect your Google account?")) return;
+      try {
+        await fetch("/api/google/disconnect", { method: "POST" });
+        loadGoogleStatus();
+      } catch (err) {
+        console.error("Disconnect error:", err);
+      }
+    }
+  </script>
+</body>
+</html>

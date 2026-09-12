@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>LOOP — System Architecture</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Georgia:wght@400;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    background: #FFFFFF;
+    color: #1B2420;
+    width: 1400px;
+    height: 980px;
+    padding: 30px 40px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .header {
+    text-align: center;
+    margin-bottom: 25px;
+  }
+  .title {
+    font-family: 'Georgia', serif;
+    font-size: 26px;
+    font-weight: 700;
+    color: #1B2420;
+    letter-spacing: -0.5px;
+  }
+  .subtitle {
+    font-size: 13.5px;
+    color: #5B6B62;
+    margin-top: 5px;
+    font-weight: 500;
+  }
+
+  .diagram-container {
+    width: 1320px;
+    height: 830px;
+    position: relative;
+  }
+
+  /* Nodes */
+  .node {
+    position: absolute;
+    border-radius: 8px;
+    background: #FFFFFF;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 10px 14px;
+    border: 1.5px solid #E1E4DC;
+    z-index: 10;
+  }
+
+  .node-user {
+    width: 260px;
+    height: 60px;
+    left: 530px;
+    top: 15px;
+    border: 2px solid #1F5C45;
+  }
+  .node-user .node-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: #1F5C45;
+  }
+  .node-user .node-sub {
+    font-size: 11px;
+    color: #5B6B62;
+    margin-top: 2px;
+  }
+
+  .node-ui {
+    width: 500px;
+    height: 74px;
+    left: 410px;
+    top: 105px;
+    background: #F3F5F1;
+    border: 2px solid #1F5C45;
+  }
+  .node-ui .node-title {
+    font-family: 'Georgia', serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: #1F5C45;
+  }
+  .node-ui .node-sub {
+    font-size: 12px;
+    color: #5B6B62;
+    margin-top: 3px;
+  }
+
+  .node-agent {
+    width: 630px;
+    height: 86px;
+    left: 345px;
+    top: 220px;
+    background: #1F5C45;
+    border: 2px solid #153F30;
+    color: #FFFFFF;
+  }
+  .node-agent .node-title {
+    font-family: 'Georgia', serif;
+    font-size: 17px;
+    font-weight: 700;
+    color: #FFFFFF;
+  }
+  .node-agent .node-sub {
+    font-size: 12px;
+    color: #E3EEE7;
+    margin-top: 3px;
+  }
+  .node-agent .loop-chain {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: #C0E3D3;
+    margin-top: 4px;
+    font-weight: 600;
+  }
+
+  .node-agentcore {
+    width: 220px;
+    height: 60px;
+    left: 1020px;
+    top: 233px;
+    background: #F9FBF9;
+    border: 1.5px dashed #1F5C45;
+  }
+  .node-agentcore .node-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: #1F5C45;
+  }
+  .node-agentcore .node-sub {
+    font-size: 10.5px;
+    color: #5B6B62;
+    margin-top: 2px;
+  }
+
+  /* Tools Row */
+  .tools-wrapper {
+    position: absolute;
+    top: 355px;
+    left: 10px;
+    width: 1300px;
+    display: flex;
+    justify-content: space-between;
+    z-index: 10;
+  }
+  .node-tool {
+    width: 176px;
+    height: 88px;
+    background: #FFFFFF;
+    border: 1.5px solid #5B6B62;
+    border-radius: 7px;
+    padding: 8px 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+  }
+  .node-tool.highlight-approval {
+    border: 2px solid #B54A2A;
+    background: #FDF9F8;
+  }
+  .node-tool.highlight-commit {
+    border: 2px solid #1F5C45;
+    background: #F6FAF7;
+  }
+  .tool-name {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    font-weight: 700;
+    color: #1B2420;
+    margin-bottom: 4px;
+  }
+  .tool-desc {
+    font-size: 11px;
+    color: #5B6B62;
+    line-height: 1.25;
+  }
+
+  /* Data Stores */
+  .store-docs {
+    position: absolute;
+    top: 495px;
+    left: 110px;
+    width: 490px;
+    height: 98px;
+    background: #F9FAF8;
+    border: 2px solid #7D8C85;
+    border-radius: 8px;
+    z-index: 10;
+  }
+  .store-life-events {
+    position: absolute;
+    top: 495px;
+    left: 720px;
+    width: 490px;
+    height: 98px;
+    background: #FDFBF7;
+    border: 2px solid #B8863B;
+    border-radius: 8px;
+    z-index: 10;
+  }
+  .store-title {
+    font-family: 'Georgia', serif;
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+  .store-docs .store-title { color: #2C4238; }
+  .store-life-events .store-title { color: #96691F; }
+  .store-sub {
+    font-size: 11.5px;
+    color: #5B6B62;
+    line-height: 1.35;
+    text-align: center;
+  }
+
+  /* SVG Canvas for Connectors */
+  svg.connectors {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 1320px;
+    height: 830px;
+    z-index: 5;
+    pointer-events: none;
+  }
+  svg.connectors path {
+    fill: none !important;
+  }
+
+  /* Legend */
+  .legend {
+    position: absolute;
+    bottom: 50px;
+    left: 0;
+    width: 1320px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+    font-size: 12px;
+    color: #5B6B62;
+    font-weight: 500;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .legend-pill {
+    width: 28px;
+    height: 14px;
+    border-radius: 4px;
+  }
+  .legend-line {
+    width: 32px;
+    height: 2px;
+  }
+
+  .caption {
+    position: absolute;
+    bottom: 12px;
+    width: 1320px;
+    text-align: center;
+    font-size: 13px;
+    color: #7D8C85;
+    font-style: italic;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="title">LOOP — System Architecture</div>
+  <div class="subtitle">Agents for Humans Hackathon (Everyday Agents track) · Built with Strands Agents SDK on Amazon Bedrock</div>
+</div>
+
+<div class="diagram-container">
+
+  <!-- SVG Connectors -->
+  <svg class="connectors">
+    <defs>
+      <marker id="arrow-gray" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+        <path d="M0,0 L0,6 L7,3 z" fill="#7D8C85" />
+      </marker>
+      <marker id="arrow-green" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+        <path d="M0,0 L0,6 L7,3 z" fill="#1F5C45" />
+      </marker>
+      <marker id="arrow-rust" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+        <path d="M0,0 L0,6 L7,3 z" fill="#B54A2A" />
+      </marker>
+      <marker id="arrow-amber" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+        <path d="M0,0 L0,6 L7,3 z" fill="#B8863B" />
+      </marker>
+    </defs>
+
+    <!-- User <-> UI -->
+    <path d="M 660 75 L 660 105" stroke="#1F5C45" stroke-width="2" marker-end="url(#arrow-green)" />
+    <path d="M 640 105 L 640 75" stroke="#1F5C45" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arrow-green)" />
+
+    <!-- UI <-> Agent -->
+    <path d="M 660 179 L 660 220" stroke="#1F5C45" stroke-width="2" marker-end="url(#arrow-green)" />
+    <text x="670" y="203" font-size="11" fill="#5B6B62" font-weight="500">runs reasoning loop</text>
+
+    <!-- Agent -> AgentCore -->
+    <path d="M 975 263 L 1020 263" stroke="#1F5C45" stroke-width="1.5" stroke-dasharray="4,3" />
+
+    <!-- Agent -> 7 Tools -->
+    <!-- Tool 1: center x=98 -->
+    <path d="M 400 306 L 98 355" stroke="#7D8C85" stroke-width="1.5" marker-end="url(#arrow-gray)" />
+    <!-- Tool 2: center x=285 -->
+    <path d="M 480 306 L 285 355" stroke="#7D8C85" stroke-width="1.5" marker-end="url(#arrow-gray)" />
+    <!-- Tool 3: center x=472 -->
+    <path d="M 560 306 L 472 355" stroke="#7D8C85" stroke-width="1.5" marker-end="url(#arrow-gray)" />
+    <!-- Tool 4: center x=660 -->
+    <path d="M 660 306 L 660 355" stroke="#7D8C85" stroke-width="1.5" marker-end="url(#arrow-gray)" />
+    <!-- Tool 5: center x=847 -->
+    <path d="M 760 306 L 847 355" stroke="#7D8C85" stroke-width="1.5" marker-end="url(#arrow-gray)" />
+    <!-- Tool 6: center x=1035 -->
+    <path d="M 840 306 L 1035 355" stroke="#B54A2A" stroke-width="1.5" marker-end="url(#arrow-rust)" />
+    <!-- Tool 7: center x=1222 -->
+    <path d="M 920 306 L 1222 355" stroke="#1F5C45" stroke-width="1.5" marker-end="url(#arrow-green)" />
+
+    <!-- Tools to Data Stores -->
+    <!-- Tool 1 (scan_workspace) -> Docs -->
+    <path d="M 98 443 L 220 495" stroke="#7D8C85" stroke-width="1.5" marker-end="url(#arrow-gray)" />
+    <!-- Tool 3 (lookup_rules) -> Docs -->
+    <path d="M 472 443 L 430 495" stroke="#7D8C85" stroke-width="1.5" marker-end="url(#arrow-gray)" />
+
+    <!-- Tool 2 (access_memory) <-> Store -->
+    <path d="M 285 443 C 285 480, 750 460, 780 495" stroke="#B8863B" stroke-width="1.5" marker-end="url(#arrow-amber)" />
+    <!-- Tool 5 (prepare_action) -> Store -->
+    <path d="M 847 443 L 870 495" stroke="#B8863B" stroke-width="1.5" marker-end="url(#arrow-amber)" />
+    <!-- Tool 7 (commit_action) -> Store -->
+    <path d="M 1222 443 L 1120 495" stroke="#1F5C45" stroke-width="2" marker-end="url(#arrow-green)" />
+
+    <!-- Human Decision Point: request_approval up to User -->
+    <path d="M 1035 355 C 1035 70, 850 45, 790 45" stroke="#B54A2A" stroke-width="2" stroke-dasharray="6,4" marker-end="url(#arrow-rust)" />
+    <text x="920" y="35" font-size="12" fill="#B54A2A" font-weight="600">requires human approval</text>
+
+    <!-- User approval down to UI & commit_action -->
+    <path d="M 910 142 C 1222 142, 1222 250, 1222 355" stroke="#1F5C45" stroke-width="2" stroke-dasharray="6,4" marker-end="url(#arrow-green)" />
+    <text x="1040" y="165" font-size="12" fill="#1F5C45" font-weight="600">on approval: commit action</text>
+  </svg>
+
+  <!-- Node: User -->
+  <div class="node node-user">
+    <div class="node-title">User</div>
+    <div class="node-sub">reviews and approves actions</div>
+  </div>
+
+  <!-- Node: UI -->
+  <div class="node node-ui">
+    <div class="node-title">LOOP Dashboard & Approval UI</div>
+    <div class="node-sub">Open loops hero counter · Approval center · Activity timeline · Deadlines</div>
+  </div>
+
+  <!-- Node: Agent -->
+  <div class="node node-agent">
+    <div class="node-title">LOOP Orchestrator Agent</div>
+    <div class="node-sub">Strands Agents SDK (Python) on Amazon Bedrock · Claude 3.5 Sonnet / Haiku</div>
+    <div class="loop-chain">DETECT &rarr; UNDERSTAND &rarr; RESEARCH &rarr; PREPARE &rarr; ASK &rarr; EXECUTE</div>
+  </div>
+
+  <!-- Node: AgentCore -->
+  <div class="node node-agentcore">
+    <div class="node-title">Bedrock AgentCore</div>
+    <div class="node-sub">Session isolation & deployment</div>
+  </div>
+
+  <!-- Tools Row -->
+  <div class="tools-wrapper">
+    <div class="node-tool">
+      <div class="tool-name">scan_workspace</div>
+      <div class="tool-desc">reads incoming receipts, emails, bills, forms</div>
+    </div>
+    <div class="node-tool">
+      <div class="tool-name">access_memory</div>
+      <div class="tool-desc">queries active loops & links context</div>
+    </div>
+    <div class="node-tool">
+      <div class="tool-name">lookup_rules</div>
+      <div class="tool-desc">warranty terms, rate schedules, policies</div>
+    </div>
+    <div class="node-tool">
+      <div class="tool-name">analyze_record</div>
+      <div class="tool-desc">flags bill spikes & computes trigger dates</div>
+    </div>
+    <div class="node-tool">
+      <div class="tool-name">prepare_action</div>
+      <div class="tool-desc">drafts claim letters, forms, reminders</div>
+    </div>
+    <div class="node-tool highlight-approval">
+      <div class="tool-name" style="color: #B54A2A;">request_approval</div>
+      <div class="tool-desc">Strands human-in-the-loop checkpoint</div>
+    </div>
+    <div class="node-tool highlight-commit">
+      <div class="tool-name" style="color: #1F5C45;">commit_action</div>
+      <div class="tool-desc">resolves loop, arms trigger & logs timeline</div>
+    </div>
+  </div>
+
+  <!-- Data Stores -->
+  <div class="node store-docs">
+    <div class="store-title">Workspace Ingestion & Reference Docs</div>
+    <div class="store-sub">/workspace/inbox/ watcher · synthetic receipts, bills, emails · reference policies<br/><i>read-only evidence & rules</i></div>
+  </div>
+
+  <div class="node store-life-events">
+    <div class="store-title">Life Events Memory Store</div>
+    <div class="store-sub">DynamoDB or local JSON (dual store) · structured open loops<br/>armed triggers & deadlines · chronological activity timeline</div>
+  </div>
+
+  <!-- Legend -->
+  <div class="legend">
+    <div class="legend-item">
+      <div class="legend-pill" style="border: 2px solid #1F5C45; background: #FFFFFF;"></div>
+      <span>User & interface</span>
+    </div>
+    <div class="legend-item">
+      <div class="legend-pill" style="background: #1F5C45;"></div>
+      <span>Orchestrator agent</span>
+    </div>
+    <div class="legend-item">
+      <div class="legend-pill" style="border: 1.5px solid #5B6B62; background: #FFFFFF;"></div>
+      <span>Agent tools</span>
+    </div>
+    <div class="legend-item">
+      <div class="legend-pill" style="border: 1.5px solid #B8863B; background: #FDFBF7;"></div>
+      <span>Memory store</span>
+    </div>
+    <div class="legend-item">
+      <div class="legend-line" style="border-bottom: 2px dashed #B54A2A;"></div>
+      <span>Human decision point</span>
+    </div>
+  </div>
+
+  <div class="caption">Figure 1. LOOP system architecture.</div>
+
+</div>
+
+</body>
+</html>

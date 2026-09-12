@@ -1,0 +1,10 @@
+[
+  {
+    "id": "tl_init_status",
+    "timestamp": "Live",
+    "iso_timestamp": "2026-09-12T11:45:00.000000",
+    "event_id": "system",
+    "message": "AWS Bedrock probe completed (eu-north-1 · eu.anthropic.claude-sonnet-4-6). Model quota pending. Local mock fallback processing disabled.",
+    "action_type": "system_probe"
+  }
+]
