@@ -1,10 +1,34 @@
 [
   {
+    "id": "tl_eace8d9b",
+    "timestamp": "10:12 AM",
+    "iso_timestamp": "2026-09-13T10:12:50.233500",
+    "event_id": "evt_pending",
+    "message": "Received 'receipt_sony_wh1000.txt'. Live model review paused (AWS Bedrock Unavailable).",
+    "action_type": "model_paused"
+  },
+  {
+    "id": "tl_d31ec1c5",
+    "timestamp": "10:12 AM",
+    "iso_timestamp": "2026-09-13T10:12:50.205493",
+    "event_id": "evt_pending",
+    "message": "Received 'receipt_sony_wh1000.txt'. Live model review paused (AWS Bedrock Unavailable).",
+    "action_type": "model_paused"
+  },
+  {
+    "id": "tl_2887a51a",
+    "timestamp": "10:12 AM",
+    "iso_timestamp": "2026-09-13T10:12:50.193575",
+    "event_id": "evt_pending",
+    "message": "Received 'receipt_sony_wh1000.txt'. Live model review paused (AWS Bedrock Unavailable).",
+    "action_type": "model_paused"
+  },
+  {
     "id": "tl_init_status",
     "timestamp": "Live",
     "iso_timestamp": "2026-09-12T11:45:00.000000",
     "event_id": "system",
-    "message": "AWS Bedrock probe completed (eu-north-1 · eu.anthropic.claude-sonnet-4-6). Model quota pending. Local mock fallback processing disabled.",
+    "message": "AWS Bedrock probe completed (eu-north-1 \u00c2\u00b7 eu.anthropic.claude-sonnet-4-6). Model quota pending. Local mock fallback processing disabled.",
     "action_type": "system_probe"
   }
 ]
