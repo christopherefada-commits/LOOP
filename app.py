@@ -5,6 +5,9 @@ Provides REST endpoints for dashboard state, approval actions, and demo simulati
 """
 
 import os
+import base64
+import hashlib
+import secrets
 from flask import Flask, render_template, jsonify, request, redirect, url_for, session
 from werkzeug.middleware.proxy_fix import ProxyFix
 from agent import LoopAgent, _load_env_file
@@ -141,10 +144,17 @@ def auth_google():
     """Initiates Google OAuth 2.0 flow."""
     redirect_uri = request.host_url.rstrip("/") + "/oauth2callback"
     flow = create_oauth_flow(redirect_uri)
+    code_verifier = secrets.token_urlsafe(64)
+    session["oauth_code_verifier"] = code_verifier
+    code_challenge = base64.urlsafe_b64encode(
+        hashlib.sha256(code_verifier.encode("ascii")).digest()
+    ).rstrip(b"=").decode("ascii")
     auth_url, state = flow.authorization_url(
         access_type="offline",
         include_granted_scopes="true",
-        prompt="consent"
+        prompt="consent",
+        code_challenge=code_challenge,
+        code_challenge_method="S256"
     )
     return redirect(auth_url)
 
@@ -154,8 +164,12 @@ def oauth2callback():
     """OAuth redirect callback handler from Google."""
     redirect_uri = request.host_url.rstrip("/") + "/oauth2callback"
     try:
+        code_verifier = session.get("oauth_code_verifier")
+        if not code_verifier:
+            raise ValueError("Missing code_verifier")
         flow = create_oauth_flow(redirect_uri)
-        flow.fetch_token(authorization_response=request.url)
+        flow.fetch_token(authorization_response=request.url, code_verifier=code_verifier)
+        session.pop("oauth_code_verifier", None)
         save_credentials(flow.credentials)
         profile = get_user_profile(flow.credentials) or {}
         session["user"] = {
@@ -170,6 +184,7 @@ def oauth2callback():
         sync_calendar_events(max_results=10)
         return redirect("/?google_connected=true")
     except Exception as e:
+        session.pop("oauth_code_verifier", None)
         print(f"[App] OAuth callback error: {e}")
         return redirect(f"/login?error={str(e)}")
 
