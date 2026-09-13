@@ -6,6 +6,7 @@ Provides REST endpoints for dashboard state, approval actions, and demo simulati
 
 import os
 from flask import Flask, render_template, jsonify, request, redirect, url_for, session
+from werkzeug.middleware.proxy_fix import ProxyFix
 from agent import LoopAgent, _load_env_file
 from store.factory import get_store
 from watcher import WorkspaceWatcher
@@ -19,6 +20,7 @@ from tools.gmail_sync import (
 _load_env_file()
 
 app = Flask(__name__)
+app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
 app.secret_key = os.environ.get("FLASK_SECRET_KEY", "loop-agent-hackathon-2026-auth-gate")
 agent = LoopAgent()
 watcher = WorkspaceWatcher()
