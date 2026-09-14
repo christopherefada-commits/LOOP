@@ -1,5 +1,40 @@
 <script>
 (() => {
+	const style = document.createElement('style');
+	style.textContent = `
+		.app { padding: 24px 20px 122px; }
+		.topbar { margin-bottom: 34px; }
+		.cards { gap: 16px; }
+		.loop-card { padding: 20px; }
+		.loop-card h2 { font-size: 19px; line-height: 1.25; }
+		.card-actions { gap: 10px; margin-top: 18px; }
+		.settings { gap: 14px; }
+		.setting { padding: 17px; gap: 14px; }
+		.setting button, .setting a {
+			min-height: 42px;
+			padding: 10px 13px;
+			border: 1px solid var(--line);
+			border-radius: 12px;
+			background: var(--paper);
+			white-space: nowrap;
+		}
+		.nav { bottom: 14px; width: min(calc(100% - 32px), 500px); padding: 8px; border-radius: 22px; }
+		.nav button { min-height: 48px; padding: 8px 4px; }
+		@media (max-width: 479px) {
+			.app { padding: 20px 16px 118px; }
+			.topbar { margin-bottom: 30px; }
+			h1 { font-size: clamp(32px, 11vw, 42px); line-height: 1.06; }
+			.subhead { margin-bottom: 28px; }
+			.setting { align-items: stretch; flex-direction: column; }
+			.setting button, .setting a { width: 100%; text-align: center; }
+			.nav { width: calc(100% - 24px); }
+		}
+		@media (min-width: 768px) {
+			.app { padding-top: 42px; padding-bottom: 132px; }
+			.loop-card { padding: 22px; }
+		}
+	`;
+
 	const presets = [
 		['receipt', 'Receipt arrives', 'Warranty receipt'],
 		['complaint', 'Complaint email', 'Product fault email'],
@@ -49,6 +84,7 @@
 	window.simulateScenario = simulateScenario;
 	document.addEventListener('DOMContentLoaded', async () => {
 		try {
+			document.head.appendChild(style);
 			const response = await fetch('/api/me');
 			const session = await response.json();
 			if (session.user?.is_demo) {
