@@ -50,7 +50,7 @@ export function LoopProvider({ children }: { children: ReactNode }) {
   const [timeline, setTimeline] = useState<TimelineEntry[]>(initialTimeline)
   const [isDemo, setIsDemo] = useState(false)
 
-  const loadSummary = useCallback(async () => {
+  const refreshData = useCallback(async () => {
     const response = await fetch('/api/summary')
     if (!response.ok) throw new Error('Unable to load LOOP summary')
     const summary = mapSummary(await response.json())
@@ -67,22 +67,16 @@ export function LoopProvider({ children }: { children: ReactNode }) {
       setLoops(summary.loops)
       setTimeline(summary.timeline)
     } else {
-      await loadSummary()
+      await refreshData()
     }
-  }, [loadSummary])
+  }, [refreshData])
 
   const simulateScenario = useCallback(async (preset: string) => {
     const response = await fetch(`/api/simulate/${encodeURIComponent(preset)}`, { method: 'POST' })
     if (!response.ok) throw new Error('Unable to simulate scenario')
-    const result = await response.json()
-    if (result.summary) {
-      const summary = mapSummary(result.summary)
-      setLoops(summary.loops)
-      setTimeline(summary.timeline)
-    } else {
-      await loadSummary()
-    }
-  }, [loadSummary])
+    await response.json()
+    await refreshData()
+  }, [refreshData])
 
   useEffect(() => {
     let cancelled = false
