@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Start with LOOP</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root { --green:#1F5C45; --mint:#34D399; --ink:#18352B; --muted:#6A8076; --paper:#F3F5F1; --line:#DCE8E0; --rust:#B54A2A; }
+    * { box-sizing:border-box; } body { margin:0; min-height:100vh; background:radial-gradient(circle at 75% 10%, #DDF7E9 0, transparent 30%), var(--paper); color:var(--ink); font:15px/1.5 'DM Sans',sans-serif; display:grid; place-items:center; padding:24px; }
+    .onboarding { width:min(100%,430px); min-height:min(760px,calc(100vh - 48px)); padding:32px 24px 24px; display:flex; flex-direction:column; }
+    .brand { display:flex; align-items:center; gap:10px; font:900 26px/1 'Nunito',sans-serif; letter-spacing:.02em; } .arc { width:30px; height:30px; }
+    .intro { margin:auto 0 34px; } .eyebrow { color:var(--green); font-size:12px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; }
+    h1 { margin:14px 0; font:900 clamp(38px,11vw,54px)/.98 'Nunito',sans-serif; letter-spacing:-.04em; } .intro p { max-width:340px; color:var(--muted); font-size:17px; line-height:1.45; margin:0; }
+    .promise { display:grid; gap:10px; margin:0 0 26px; } .promise-item { display:flex; gap:12px; align-items:center; padding:13px 14px; background:#fff; border:1px solid var(--line); border-radius:18px; }
+    .promise-icon { width:31px; height:31px; flex:none; border-radius:11px; display:grid; place-items:center; background:#E5F7ED; color:var(--green); } .promise-item strong { display:block; font-size:13px; } .promise-item span { display:block; color:var(--muted); font-size:12px; }
+    .actions { display:grid; gap:12px; } .button { min-height:54px; border-radius:18px; display:flex; align-items:center; justify-content:center; gap:11px; text-decoration:none; font-weight:700; transition:transform .18s ease,box-shadow .18s ease; }
+    .button:active { transform:scale(.98); } .button:focus-visible { outline:3px solid #8BE6BE; outline-offset:3px; } .button-primary { color:#fff; background:linear-gradient(110deg,var(--green),var(--mint)); box-shadow:0 12px 25px rgba(31,92,69,.18); } .button-secondary { color:var(--green); background:#fff; border:1px solid var(--line); }
+    .privacy { color:var(--muted); text-align:center; font-size:11px; margin:18px 8px 0; } .error { color:var(--rust); background:#FFF0EB; border-radius:12px; padding:10px 12px; margin:0 0 14px; font-size:12px; }
+    @media (min-width:700px) { .onboarding { min-height:720px; padding:40px 34px 30px; } } @media (prefers-reduced-motion:reduce) { .button { transition:none; } }
+  </style>
+</head>
+<body>
+  <main class="onboarding">
+    <div class="brand"><svg class="arc" viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="11" fill="none" stroke="var(--green)" stroke-width="3" stroke-linecap="round" stroke-dasharray="58 12"/></svg> LOOP</div>
+    <section class="intro"><div class="eyebrow">A quieter way to keep up</div><h1>Close the loops hiding in your day.</h1><p>LOOP finds the paperwork, deadlines, and decisions that need you, then prepares the next step.</p></section>
+    <section class="promise" aria-label="What LOOP does"><div class="promise-item"><div class="promise-icon">✓</div><div><strong>Finds what matters</strong><span>Across your inbox and calendar.</span></div></div><div class="promise-item"><div class="promise-icon">↗</div><div><strong>Prepares the work</strong><span>So you can review it in one calm place.</span></div></div><div class="promise-item"><div class="promise-icon">○</div><div><strong>Asks before acting</strong><span>You stay in charge of important decisions.</span></div></div></section>
+    {% if request.args.get('error') %}<div class="error" role="alert">Google connection could not be completed. Please try again.</div>{% endif %}
+    <div class="actions"><a class="button button-primary" href="/auth/google"><span aria-hidden="true">G</span> Connect Google account</a><a class="button button-secondary" href="/auth/demo">Explore demo</a></div>
+    <p class="privacy">Your account stays yours. LOOP asks before it sends, submits, cancels, or pays.</p>
+  </main>
+</body>
+</html>

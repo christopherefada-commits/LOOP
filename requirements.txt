@@ -1,0 +1,11 @@
+strands-agents
+strands-agents-tools
+boto3
+pydantic>=2.0
+watchdog
+pytest
+flask>=3.0
+python-dateutil
+google-auth
+google-auth-oauthlib
+google-api-python-client

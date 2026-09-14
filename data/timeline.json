@@ -1,0 +1,98 @@
+[
+  {
+    "id": "tl_5084d644",
+    "timestamp": "12:33 PM",
+    "iso_timestamp": "2026-09-13T12:33:56.575475",
+    "event_id": "evt_pending",
+    "message": "Received 'calendar_invite_dentist.txt'. Live model review paused (AWS Bedrock Unavailable).",
+    "action_type": "model_paused"
+  },
+  {
+    "id": "tl_d50bc800",
+    "timestamp": "12:33 PM",
+    "iso_timestamp": "2026-09-13T12:33:55.063755",
+    "event_id": "evt_pending",
+    "message": "Received 'email_headphones_fault.txt'. Live model review paused (AWS Bedrock Unavailable).",
+    "action_type": "model_paused"
+  },
+  {
+    "id": "tl_b926b881",
+    "timestamp": "12:33 PM",
+    "iso_timestamp": "2026-09-13T12:33:54.357729",
+    "event_id": "evt_pending",
+    "message": "Received 'another_mail.md'. Live model review paused (AWS Bedrock Unavailable).",
+    "action_type": "model_paused"
+  },
+  {
+    "id": "tl_01270b61",
+    "timestamp": "12:33 PM",
+    "iso_timestamp": "2026-09-13T12:33:53.242796",
+    "event_id": "evt_pending",
+    "message": "Received 'new_email.md'. Live model review paused (AWS Bedrock Unavailable).",
+    "action_type": "model_paused"
+  },
+  {
+    "id": "tl_5dad0a56",
+    "timestamp": "12:33 PM",
+    "iso_timestamp": "2026-09-13T12:33:50.030546",
+    "event_id": "evt_pending",
+    "message": "Received 'receipt_sony_wh1000.txt'. Live model review paused (AWS Bedrock Unavailable).",
+    "action_type": "model_paused"
+  },
+  {
+    "id": "tl_c684a9bf",
+    "timestamp": "12:33 PM",
+    "iso_timestamp": "2026-09-13T12:33:48.934283",
+    "event_id": "evt_pending",
+    "message": "Received 'another_mail.md'. Live model review paused (AWS Bedrock Unavailable).",
+    "action_type": "model_paused"
+  },
+  {
+    "id": "tl_9e404655",
+    "timestamp": "12:33 PM",
+    "iso_timestamp": "2026-09-13T12:33:48.374435",
+    "event_id": "evt_pending",
+    "message": "Received 'new_email.md'. Live model review paused (AWS Bedrock Unavailable).",
+    "action_type": "model_paused"
+  },
+  {
+    "id": "tl_211e7e63",
+    "timestamp": "12:33 PM",
+    "iso_timestamp": "2026-09-13T12:33:46.645227",
+    "event_id": "evt_pending",
+    "message": "Received 'receipt_sony_wh1000.txt'. Live model review paused (AWS Bedrock Unavailable).",
+    "action_type": "model_paused"
+  },
+  {
+    "id": "tl_9e7d2959",
+    "timestamp": "12:33 PM",
+    "iso_timestamp": "2026-09-13T12:33:38.648100",
+    "event_id": "evt_pending",
+    "message": "Received 'another_mail.md'. Live model review paused (AWS Bedrock Model Notice: Quota Provisioning Pending).",
+    "action_type": "model_paused"
+  },
+  {
+    "id": "tl_55358156",
+    "timestamp": "12:33 PM",
+    "iso_timestamp": "2026-09-13T12:33:38.132656",
+    "event_id": "evt_pending",
+    "message": "Received 'new_email.md'. Live model review paused (AWS Bedrock Model Notice: Quota Provisioning Pending).",
+    "action_type": "model_paused"
+  },
+  {
+    "id": "tl_aaf46fe5",
+    "timestamp": "12:33 PM",
+    "iso_timestamp": "2026-09-13T12:33:36.602808",
+    "event_id": "evt_pending",
+    "message": "Received 'new_email.md'. Live model review paused (AWS Bedrock Model Notice: Quota Provisioning Pending).",
+    "action_type": "model_paused"
+  },
+  {
+    "id": "tl_d660af61",
+    "timestamp": "12:33 PM",
+    "iso_timestamp": "2026-09-13T12:33:38.135678",
+    "event_id": "evt_pending",
+    "message": "Received 'new_email.md'. Live model review paused (AWS Bedrock Model Notice: Quota Provisioning Pending).",
+    "action_type": "model_paused"
+  }
+]

@@ -1,0 +1,32 @@
+======================================================================
+                         APEX ELECTRONICS STORE
+                 1402 Tech Boulevard, San Francisco, CA
+======================================================================
+ORDER NUMBER:   REC-2026-0392
+ORDER DATE:     March 14, 2026
+CUSTOMER:       Alex Mercer (alex.mercer.dev@gmail.com)
+PAYMENT METHOD: Visa ending in 4108
+
+----------------------------------------------------------------------
+ITEMS PURCHASED:
+Qty  Description                                    Price
+----------------------------------------------------------------------
+1    Sony WH-1000XM5 Wireless Headphones          $179.00
+     Color: Silver
+     Serial Number: SN-WH5-9832144
+
+----------------------------------------------------------------------
+SUBTOTAL:                                         $179.00
+TAX (0.00% - Tax Holiday):                          $0.00
+SHIPPING (Standard 3-Day):                          $0.00
+----------------------------------------------------------------------
+TOTAL PAID:                                       $179.00
+======================================================================
+
+MANUFACTURER WARRANTY:
+This product includes 1-Year Limited Manufacturer Hardware Warranty
+Coverage Period: March 14, 2026 – March 14, 2027
+Covers hardware defects, power issues, and audio drive malfunction.
+For claims, submit proof of purchase and description of fault to:
+warranty-claims@sony-electronics-support.example.com
+======================================================================

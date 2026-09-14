@@ -1,0 +1,13 @@
+From: orders@quickship-online.example.com
+To: alex.mercer.dev@gmail.com
+Date: April 10, 2026 at 11:15 AM
+Subject: Your package has been delivered!
+
+Hi Alex,
+
+Good news! Your order #QS-981240 ("Designing Data-Intensive Applications, 2nd Ed") was left near your front porch by courier.
+
+Carrier: ExpressRoute Logistics
+Tracking ID: ER-992184-US
+
+No action is needed on your part. Thank you for shopping with us!
