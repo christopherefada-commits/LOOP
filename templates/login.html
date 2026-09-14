@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Start with LOOP</title>
-  <link rel="icon" type="image/jpeg" href="/logo.jpg">
+  <link rel="icon" type="image/png" href="/logo.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
@@ -25,7 +25,7 @@
 </head>
 <body>
   <main class="onboarding">
-    <div class="brand"><img src="/logo.jpg" alt="LOOP Logo" style="height:36px; border-radius:8px; object-fit:contain;"> LOOP</div>
+    <div class="brand"><img src="/logo.png" alt="LOOP Logo" style="height:36px; object-fit:contain;"> LOOP</div>
     <section class="intro"><div class="eyebrow">A quieter way to keep up</div><h1>Close the loops hiding in your day.</h1><p>LOOP finds the paperwork, deadlines, and decisions that need you, then prepares the next step.</p></section>
     <section class="promise" aria-label="What LOOP does"><div class="promise-item"><div class="promise-icon">✓</div><div><strong>Finds what matters</strong><span>Across your inbox and calendar.</span></div></div><div class="promise-item"><div class="promise-icon">↗</div><div><strong>Prepares the work</strong><span>So you can review it in one calm place.</span></div></div><div class="promise-item"><div class="promise-icon">○</div><div><strong>Asks before acting</strong><span>You stay in charge of important decisions.</span></div></div></section>
     {% if request.args.get('error') %}<div class="error" role="alert">Google connection could not be completed. Please try again.</div>{% endif %}

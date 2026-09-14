@@ -1,7 +1,7 @@
 # LOOP — Autonomous Life-Admin Agent
 
 <p align="center">
-  <img src="logo.jpg" alt="LOOP Logo" width="380" />
+  <img src="logo.png" alt="LOOP Logo" width="380" />
 </p>
 
 > **Agents for Humans Hackathon** · Everyday Agents Track  
