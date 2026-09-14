@@ -149,13 +149,13 @@ class LoopAgent:
                 }
             return False
 
-    def run_discovery_cycle(self) -> Dict[str, Any]:
+    def run_discovery_cycle(self, local_only: bool = False) -> Dict[str, Any]:
         """
         Executes the autonomous discovery loop.
         If live AWS Bedrock is not available and local fallback is disabled, pauses processing and reports status.
         """
-        is_ready = self._is_bedrock_ready()
-        allow_fallback = os.environ.get("ALLOW_LOCAL_FALLBACK", "false").lower() == "true"
+        is_ready = True if local_only else self._is_bedrock_ready()
+        allow_fallback = local_only or os.environ.get("ALLOW_LOCAL_FALLBACK", "false").lower() == "true"
 
         if not is_ready and not allow_fallback:
             return {

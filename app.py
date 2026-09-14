@@ -63,8 +63,6 @@ def index():
 @app.route("/api/summary", methods=["GET"])
 def get_summary():
     """Returns the live state for the dashboard, approval views, and timeline."""
-    # Ensure any new inbox items are captured
-    agent.run_discovery_cycle()
     summary = agent.get_dashboard_summary()
     return jsonify(summary)
 
@@ -82,7 +80,7 @@ def get_event(event_id):
 @app.route("/api/run-discovery", methods=["POST"])
 def run_discovery():
     """Triggers the agent's 6-stage autonomous reasoning loop."""
-    result = agent.run_discovery_cycle()
+    result = agent.run_discovery_cycle(local_only=bool(session.get("user", {}).get("is_demo")))
     summary = agent.get_dashboard_summary()
     return jsonify({"result": result, "summary": summary})
 
@@ -119,7 +117,7 @@ def simulate_drop(preset_name):
     try:
         dest = watcher.simulate_file_drop(preset_name)
         # Process the newly arrived document
-        agent.run_discovery_cycle()
+        agent.run_discovery_cycle(local_only=bool(session.get("user", {}).get("is_demo")))
         summary = agent.get_dashboard_summary()
         return jsonify({"success": True, "file": dest, "summary": summary})
     except Exception as e:

@@ -8,8 +8,8 @@ interface LoopContextValue {
   isDemo: boolean
   runDiscovery: () => Promise<void>
   simulateScenario: (preset: string) => Promise<void>
-  approveLoop: (id: string) => void
-  rejectLoop: (id: string) => void
+  approveLoop: (id: string) => Promise<void>
+  rejectLoop: (id: string) => Promise<void>
   dismissLoop: (id: string) => void
   getLoop: (id: string) => LifeEvent | undefined
   openLoopCount: number
@@ -74,9 +74,13 @@ export function LoopProvider({ children }: { children: ReactNode }) {
   const simulateScenario = useCallback(async (preset: string) => {
     const response = await fetch(`/api/simulate/${encodeURIComponent(preset)}`, { method: 'POST' })
     if (!response.ok) throw new Error('Unable to simulate scenario')
-    await response.json()
-    await refreshData()
-  }, [refreshData])
+    const result = await response.json()
+    if (result.summary) {
+      const summary = mapSummary(result.summary)
+      setLoops(summary.loops)
+      setTimeline(summary.timeline)
+    }
+  }, [])
 
   useEffect(() => {
     let cancelled = false
@@ -103,27 +107,29 @@ export function LoopProvider({ children }: { children: ReactNode }) {
     ])
   }, [])
 
-  const approveLoop = useCallback(
-    (id: string) => {
-      const loop = loops.find((l) => l.id === id)
-      if (!loop) return
-
-      setLoops((prev) =>
-        prev.map((l) => (l.id === id ? { ...l, status: 'completed' as const } : l)),
-      )
-      addTimeline(`Approved and submitted the ${loop.type === 'warranty' ? 'warranty claim' : 'action'}.`, id)
-    },
-    [loops, addTimeline],
-  )
+  const approveLoop = useCallback(async (id: string) => {
+    const response = await fetch(`/api/approve/${encodeURIComponent(id)}`, { method: 'POST' })
+    if (!response.ok) throw new Error('Unable to approve LOOP action')
+    const result = await response.json()
+    if (result.summary) {
+      const summary = mapSummary(result.summary)
+      setLoops(summary.loops)
+      setTimeline(summary.timeline)
+    }
+  }, [])
 
   const rejectLoop = useCallback(
-    (id: string) => {
-      setLoops((prev) =>
-        prev.map((l) => (l.id === id ? { ...l, status: 'dismissed' as const } : l)),
-      )
-      addTimeline('Rejected the prepared action.', id)
+    async (id: string) => {
+      const response = await fetch(`/api/reject/${encodeURIComponent(id)}`, { method: 'POST' })
+      if (!response.ok) throw new Error('Unable to reject LOOP action')
+      const result = await response.json()
+      if (result.summary) {
+        const summary = mapSummary(result.summary)
+        setLoops(summary.loops)
+        setTimeline(summary.timeline)
+      }
     },
-    [addTimeline],
+    [],
   )
 
   const dismissLoop = useCallback(

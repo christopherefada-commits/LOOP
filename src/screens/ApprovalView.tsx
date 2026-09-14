@@ -26,17 +26,15 @@ export function ApprovalView() {
     )
   }
 
-  const handleApprove = () => {
+  const handleApprove = async () => {
     setResolved(true)
     setAction('approved')
-    setTimeout(() => {
-      approveLoop(loop.id)
-      navigate('/activity')
-    }, 1200)
+    await approveLoop(loop.id)
+    navigate('/activity')
   }
 
-  const handleReject = () => {
-    rejectLoop(loop.id)
+  const handleReject = async () => {
+    await rejectLoop(loop.id)
     navigate('/')
   }
 
