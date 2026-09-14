@@ -17,7 +17,7 @@
 		section.id = 'demoScenarios';
 		section.className = 'settings';
 		section.style.cssText = 'margin-top:24px';
-		section.innerHTML = '<div class="section-title">Demo scenarios <small>Sandbox only</small></div>' + presets.map(([name, title, description]) => `<div class="setting"><div><strong>${title}</strong><span>Add ${description.toLowerCase()}</span></div><button type="button" data-preset="${name}">Simulate: ${title}</button></div>`).join('');
+		section.innerHTML = '<div class="section-title">Demo scenarios <small>Sandbox only</small></div>' + presets.map(([name, title, description]) => `<div class="setting"><div><strong>${title}</strong><span>Add ${description.toLowerCase()}</span></div><button type="button" data-preset="${name}">Add simulation: ${title}</button></div>`).join('');
 		section.addEventListener('click', event => {
 			const button = event.target.closest('[data-preset]');
 			if (button) simulateScenario(button.dataset.preset, button);
@@ -27,23 +27,22 @@
 
 	async function simulateScenario(preset, button) {
 		const originalLabel = button.textContent;
+		let added = false;
 		button.disabled = true;
-		button.textContent = 'Adding';
+		button.textContent = 'Adding...';
 		try {
 			const response = await fetch(`/api/simulate/${encodeURIComponent(preset)}`, { method: 'POST' });
 			const result = await response.json();
 			if (!response.ok || result.success === false) throw new Error(result.error || 'Simulation failed');
-			if (result.summary) {
-				data = result.summary;
-				render();
-			} else {
-				await refreshData();
-			}
+			await refreshData();
+			added = true;
+			button.textContent = 'Added ✓';
+			window.setTimeout(() => { button.textContent = originalLabel; }, 1500);
 		} catch (error) {
 			console.error('Demo scenario failed:', error);
 		} finally {
 			button.disabled = false;
-			button.textContent = originalLabel;
+			if (!added) button.textContent = originalLabel;
 		}
 	}
 
