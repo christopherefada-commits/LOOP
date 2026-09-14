@@ -8,7 +8,6 @@ import {
   Settings,
   ShieldCheck,
 } from 'lucide-react'
-import { LoopIcon } from './LoopIcon'
 
 const navItems = [
   { to: '/', label: 'All', icon: LayoutGrid, end: true },
@@ -34,7 +33,7 @@ export function Layout() {
         }}
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '0 12px', marginBottom: 32 }}>
-          <LoopIcon size={32} />
+          <img src="/logo.jpg" alt="LOOP Logo" style={{ height: 32, borderRadius: 6, objectFit: 'contain' }} />
           <span style={{ fontSize: '1.375rem', fontWeight: 700, letterSpacing: '-0.02em' }}>LOOP</span>
         </div>
 

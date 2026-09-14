@@ -9,7 +9,7 @@ import base64
 import hashlib
 import secrets
 import threading
-from flask import Flask, render_template, jsonify, request, redirect, url_for, session
+from flask import Flask, render_template, jsonify, request, redirect, url_for, session, send_from_directory
 from werkzeug.middleware.proxy_fix import ProxyFix
 from agent import LoopAgent, _load_env_file
 from store.factory import get_store
@@ -61,6 +61,18 @@ def index():
     if not user:
         return redirect("/login")
     return render_template("index.html", user=user)
+
+
+@app.route("/logo.jpg")
+def serve_logo_jpg():
+    """Serves the primary logo image."""
+    return send_from_directory(os.path.abspath(os.path.dirname(__file__)), "logo.jpg", mimetype="image/jpeg")
+
+
+@app.route("/logo.png")
+def serve_logo_png():
+    """Serves the logo as PNG."""
+    return send_from_directory(os.path.abspath(os.path.dirname(__file__)), "logo.png", mimetype="image/png")
 
 
 @app.route("/api/summary", methods=["GET"])
