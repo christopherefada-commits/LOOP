@@ -8,6 +8,7 @@ import os
 import base64
 import hashlib
 import secrets
+import threading
 from flask import Flask, render_template, jsonify, request, redirect, url_for, session
 from werkzeug.middleware.proxy_fix import ProxyFix
 from agent import LoopAgent, _load_env_file
@@ -27,11 +28,13 @@ app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
 app.secret_key = os.environ.get("FLASK_SECRET_KEY", "loop-agent-hackathon-2026-auth-gate")
 agent = LoopAgent()
 watcher = WorkspaceWatcher()
+processing_lock = threading.RLock()
 
 def on_inbox_file_detected(filepath: str):
     """Callback triggered whenever a document is dropped into workspace/inbox."""
-    print(f"[App] Processing incoming file from inbox: {filepath}")
-    agent.process_incoming_file(filepath)
+    with processing_lock:
+        print(f"[App] Processing incoming file from inbox: {filepath}")
+        agent.process_incoming_file(filepath)
 
 # Start real-time background file watcher
 try:
@@ -80,8 +83,9 @@ def get_event(event_id):
 @app.route("/api/run-discovery", methods=["POST"])
 def run_discovery():
     """Triggers the agent's 6-stage autonomous reasoning loop."""
-    result = agent.run_discovery_cycle(local_only=bool(session.get("user", {}).get("is_demo")))
-    summary = agent.get_dashboard_summary()
+    with processing_lock:
+        result = agent.run_discovery_cycle(local_only=bool(session.get("user", {}).get("is_demo")))
+        summary = agent.get_dashboard_summary()
     return jsonify({"result": result, "summary": summary})
 
 
@@ -115,10 +119,11 @@ def edit_event(event_id):
 def simulate_drop(preset_name):
     """Simulates dropping a synthetic document into the workspace inbox for live video recordings."""
     try:
-        dest = watcher.simulate_file_drop(preset_name)
-        # Process the newly arrived document
-        agent.run_discovery_cycle(local_only=bool(session.get("user", {}).get("is_demo")))
-        summary = agent.get_dashboard_summary()
+        with processing_lock:
+            dest = watcher.simulate_file_drop(preset_name)
+            # Process the newly arrived document before the watcher can write over it.
+            agent.run_discovery_cycle(local_only=bool(session.get("user", {}).get("is_demo")))
+            summary = agent.get_dashboard_summary()
         return jsonify({"success": True, "file": dest, "summary": summary})
     except Exception as e:
         return jsonify({"success": False, "error": str(e)}), 400
