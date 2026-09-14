@@ -561,10 +561,10 @@ class LoopAgent:
         """Updates the prepared draft with user edits."""
         return commit_action(event_id, decision="edit", notes=new_text)
 
-    def get_dashboard_summary(self) -> Dict[str, Any]:
+    def get_dashboard_summary(self, local_only: bool = False) -> Dict[str, Any]:
         """Returns counts and active items for the dashboard."""
-        is_ready = self._is_bedrock_ready()
-        allow_fallback = os.environ.get("ALLOW_LOCAL_FALLBACK", "false").lower() == "true"
+        is_ready = True if local_only else self._is_bedrock_ready()
+        allow_fallback = local_only or os.environ.get("ALLOW_LOCAL_FALLBACK", "false").lower() == "true"
 
         # If live Bedrock model is not ready and local fallback is disabled, do not show local events
         events = self.store.get_all_events() if (is_ready or allow_fallback) else []

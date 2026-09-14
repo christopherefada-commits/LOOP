@@ -66,7 +66,7 @@ def index():
 @app.route("/api/summary", methods=["GET"])
 def get_summary():
     """Returns the live state for the dashboard, approval views, and timeline."""
-    summary = agent.get_dashboard_summary()
+    summary = agent.get_dashboard_summary(local_only=bool(session.get("user", {}).get("is_demo")))
     return jsonify(summary)
 
 
@@ -83,9 +83,10 @@ def get_event(event_id):
 @app.route("/api/run-discovery", methods=["POST"])
 def run_discovery():
     """Triggers the agent's 6-stage autonomous reasoning loop."""
+    local_only = bool(session.get("user", {}).get("is_demo"))
     with processing_lock:
-        result = agent.run_discovery_cycle(local_only=bool(session.get("user", {}).get("is_demo")))
-        summary = agent.get_dashboard_summary()
+        result = agent.run_discovery_cycle(local_only=local_only)
+        summary = agent.get_dashboard_summary(local_only=local_only)
     return jsonify({"result": result, "summary": summary})
 
 
@@ -119,11 +120,12 @@ def edit_event(event_id):
 def simulate_drop(preset_name):
     """Simulates dropping a synthetic document into the workspace inbox for live video recordings."""
     try:
+        local_only = bool(session.get("user", {}).get("is_demo"))
         with processing_lock:
             dest = watcher.simulate_file_drop(preset_name)
             # Process the newly arrived document before the watcher can write over it.
-            agent.run_discovery_cycle(local_only=bool(session.get("user", {}).get("is_demo")))
-            summary = agent.get_dashboard_summary()
+            agent.run_discovery_cycle(local_only=local_only)
+            summary = agent.get_dashboard_summary(local_only=local_only)
         return jsonify({"success": True, "file": dest, "summary": summary})
     except Exception as e:
         return jsonify({"success": False, "error": str(e)}), 400
