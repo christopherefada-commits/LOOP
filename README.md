@@ -103,6 +103,11 @@ python3 app.py
 ```
 Open your browser to: **`http://127.0.0.1:5000`** (or configured port).
 
+### Live Project
+The deployed project is available at [https://looplive-steel.vercel.app/](https://looplive-steel.vercel.app/).
+
+**Access note:** The main LOOP system is currently restricted to email accounts that have been granted access by the developers. Users without an authorized email address cannot enter the main system yet.
+
 ### 4. Optional: Configure Amazon Bedrock
 To run with live Amazon Bedrock inference, set your environment variables:
 ```bash
@@ -112,6 +117,15 @@ export AWS_REGION="us-east-1"
 export BEDROCK_MODEL_ID="anthropic.claude-3-5-sonnet-20241022-v2:0"
 ```
 *(If credentials are not set, LOOP gracefully runs with its deterministic evaluation engine so all UI and demo features work out-of-the-box).*
+
+On Windows PowerShell, use the local environment loader after creating `.env` from `.env.example`:
+```powershell
+Copy-Item .env.example .env
+notepad .env
+. .\load-env.ps1
+python app.py
+```
+Never commit `.env`. For production, prefer an IAM role or a named AWS CLI profile over long-lived access keys.
 
 ---
 
